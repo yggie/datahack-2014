@@ -1,0 +1,23 @@
+{
+  "name": "datahack-2014",
+  "version": "0.0.0",
+  "description": "Power to the People",
+  "main": "simple_server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yggie/datahack-2014.git"
+  },
+  "author": "Bryan Yap",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yggie/datahack-2014/issues"
+  },
+  "homepage": "https://github.com/yggie/datahack-2014",
+  "devDependencies": {
+    "express": "^4.6.1",
+    "jade": "^1.3.1"
+  }
+}

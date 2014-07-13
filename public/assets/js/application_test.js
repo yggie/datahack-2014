@@ -104,7 +104,7 @@ angular.module('Voices', [])
         'Communication', 'Finance', 'Real Estate', 'Business Services',
         'Education', 'Health', 'Other']
 
-    var interactionMatrix = new Array(sectors.length * 2);
+    var interactionMatrix = new Array(sectors.length * sectors.length);
 
     index = 0;
     function onVoiceDataUpdate(service) {
@@ -141,17 +141,18 @@ angular.module('Voices', [])
             .style('stroke-width', 2)
             .style('opacity', 0.6);
 
-        // circles = svg.selectAll('.interaction').data(interactionMatrix)
-        //     .attr('r', interactionR)
-        //     .style('fill', function(d, i) { return interactionColors(i); });
-        // // circles.transition();
-        // circles.enter().append('circle')
-        //     .attr('class', 'interaction')
-        //     .attr('cx', function(d, i) { return 100*(i % sectors.length); })
-        //     .attr('cy', function(d, i) { return 100*Math.floor(i/sectors.length); })
-        //     .style('fill', function(d, i) { return interactionColors(i); })
-        //     .attr('transform', 'translate(600, 0)')
-        //     .attr('r', interactionR);
+        circles = svg.selectAll('.interaction').data(interactionMatrix)
+            .attr('r', interactionR)
+            .style('fill', function(d, i) { return interactionColors(i); });
+        // circles.transition();
+        circles.enter().append('circle')
+            .attr('class', 'interaction')
+            .attr('cx', function(d, i) { return 40*(i % sectors.length); })
+            .attr('cy', function(d, i) { return 40*Math.floor(i/sectors.length); })
+            .style('fill', function(d, i) { return interactionColors(i); })
+            .style('stroke', 'none')
+            .attr('transform', 'translate(650, 200)')
+            .attr('r', interactionR);
       }
     }
 
@@ -179,17 +180,17 @@ angular.module('Voices', [])
     }
 
     function interactionR(d) {
-      return 1.5 * d;
+      return Math.min(8 * d, 40);
     }
 
     function link($scope, element, attr, controller) {
       scope = $scope;
       updateSectorData([]);
 
-      var width = 600,
+      var width = 1300,
           height = 600;
 
-      var sc = Math.min(width,height) * 0.5;
+      var sc = Math.min(width, height) * 0.5;
       var lat = -180;
       // projection = d3.geo.equirectangular()
       //     .scale(sc * 0.5)
@@ -197,7 +198,7 @@ angular.module('Voices', [])
       //     .rotate([lat, 0]);
       projection = d3.geo.orthographic()
           .scale(sc)
-          .translate([width/2, height/2])
+          .translate([Math.min(width, height)/2, height/2])
           .rotate([lat, 0])
           .clipAngle(90);
       var path = d3.geo.path()
@@ -214,6 +215,17 @@ angular.module('Voices', [])
         .enter().append('path')
           .attr('class','land')
           .attr('d', path);
+
+      for (var i = 0; i < sectors.length; i++) {
+        svg.append('g')
+            .attr('transform', 'translate(' + (650 + 40*i) + ', 250) rotate(270)')
+            .append('text')
+            .text(sectors[i]);
+        svg.append('g')
+            .attr('transform', 'translate(' + (650 + 40*(sectors.length - 1)) + ', ' + (200 + 40*i) + ')')
+            .append('text')
+            .text(sectors[i]);
+      }
 
       // svg.selectAll('.sea')
       //     .data([topojson.mesh(worldtopo, worldtopo.objects.land, function(a, b) { return a != b })])
@@ -297,8 +309,11 @@ angular.module('Voices', [])
       function drawClock(){ //create all the clock elements
         updateData(); //draw them in the correct starting position
         var svg = d3.select(element[0]).append("svg")
-        .attr("width", width)
-        .attr("height", height);
+            .style('position', 'fixed')
+            .style('top', 0)
+            .style('right', 0)
+            .attr("width", width)
+            .attr("height", height);
 
         var face = svg.append('g')
         .attr('id','clock-face')

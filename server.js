@@ -13,6 +13,10 @@ app.use('/voices', function(req, res) {
   res.send(voices);
 });
 
+app.use('/test', function(req, res) {
+  res.sendfile(__dirname + '/index_test.html');
+});
+
 app.use('/', function(req, res) {
   res.sendfile(__dirname + '/index.html');
 });
